@@ -1,8 +1,8 @@
 # EPUB Language Identifier
 
-EPUB Language Identifier scans a directory tree for `.epub` and `.mobi` files and reports likely book language from available metadata. For EPUB files, it also tries to identify language from ISBN-derived information and sampled text detection.
+EPUB Language Identifier scans `.epub` and `.mobi` files and writes a pipe-delimited language report. It checks ebook metadata for both formats. For EPUB files, it also reads book text once and reuses that extracted text for ISBN-based language lookup and sampled text language detection.
 
-The main script is `identify-epub-language.py`. It writes a pipe-delimited CSV report with these columns:
+The report columns are:
 
 ```text
 FILENAME|FROM_METADATA|FROM_ISBN|FROM_DETECTION
@@ -16,15 +16,9 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-On Windows PowerShell, activate the environment with:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
 ## Usage
 
-Scan the current directory recursively and write `output3.txt`:
+Scan the current directory recursively and write `language-report.txt`:
 
 ```bash
 python identify-epub-language.py
@@ -36,29 +30,27 @@ Scan a specific directory:
 python identify-epub-language.py --path /path/to/books
 ```
 
-Write the report to a specific file:
+Choose a report path:
 
 ```bash
-python identify-epub-language.py --path /path/to/books --output language-report.txt
+python identify-epub-language.py --path /path/to/books --output /tmp/books-language-report.txt
 ```
 
-Only scan the selected directory, without descending into subdirectories:
+Scan only the selected directory:
 
 ```bash
 python identify-epub-language.py --path /path/to/books --no-recursive
 ```
 
-Print per-file warnings for metadata, EPUB parsing, ISBN, or language-detection failures:
+Show per-file warnings:
 
 ```bash
 python identify-epub-language.py --path /path/to/books --verbose
 ```
 
-The script recursively scans below the current working directory for `.epub` and `.mobi` files. EPUB language detection reads book contents to sample text, while MOBI handling is limited to metadata fetched through `ebookatty`.
+Warnings cover metadata lookup, EPUB parsing, ISBN lookup, and text language detection failures. Without `--verbose`, files with failed detection steps are still included in the report with `?` for unknown values.
 
 ## Tests
-
-Run the test suite with:
 
 ```bash
 python -m unittest discover -s tests
@@ -66,4 +58,4 @@ python -m unittest discover -s tests
 
 ## Notes
 
-The output file is overwritten each time the script runs. Keep ebook files outside the repository; `.epub`, `.mobi`, and generated output files are ignored by Git.
+The report file is overwritten on each run. Keep ebook files outside the repository; `.epub`, `.mobi`, and generated report files are ignored by Git.

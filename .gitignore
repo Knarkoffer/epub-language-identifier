@@ -222,4 +222,5 @@ __marimo__/
 *.epub
 *.mobi
 output*.txt
+language-report.txt
 err.txt

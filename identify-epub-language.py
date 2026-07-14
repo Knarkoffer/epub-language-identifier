@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 
-DEFAULT_OUTPUT = "output3.txt"
+DEFAULT_OUTPUT = "language-report.txt"
 EBOOK_SUFFIXES = {".epub", ".mobi"}
 REPORT_COLUMNS = ("FILENAME", "FROM_METADATA", "FROM_ISBN", "FROM_DETECTION")
 SKIPPED_EPUB_DOCUMENTS = {
