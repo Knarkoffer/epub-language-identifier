@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local project data and IDE metadata
+.idea/
+*.epub
+*.mobi
+output*.txt
+err.txt

@@ -1,0 +1,7 @@
+beautifulsoup4
+ebookatty
+EbookLib
+isbnlib
+iso639-lang
+langdetect
+lxml

@@ -1,0 +1,26 @@
+id: 1124
+title: EPUB Language Identifier
+status: active
+type: utility
+primary_language: python
+languages:
+  - python
+tags:
+  - epub
+  - identifier
+  - language
+libraries:
+  python:
+    - bs4:BeautifulSoup
+    - ebookatty:MetadataFetcher
+    - ebooklib:epub
+    - isbnlib
+    - iso639:Lang
+    - langdetect
+    - os
+    - pathlib:Path
+    - random
+    - re
+github:
+  owner: Knarkoffer
+  repo: epub-language-identifier
