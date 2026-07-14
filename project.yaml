@@ -6,9 +6,12 @@ primary_language: python
 languages:
   - python
 tags:
+  - ebook-tools
+  - ebooks
   - epub
-  - identifier
-  - language
+  - isbn
+  - language-detection
+  - mobi
 libraries:
   python:
     - bs4:BeautifulSoup
