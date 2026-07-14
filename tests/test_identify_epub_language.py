@@ -47,11 +47,11 @@ class IdentifyEpubLanguageTests(unittest.TestCase):
             self.assertEqual(recursive, [epub_file.resolve(), mobi_file.resolve()])
             self.assertEqual(shallow, [epub_file.resolve()])
 
-    def test_write_report_uses_pipe_delimited_csv(self) -> None:
+    def test_write_report_uses_comma_delimited_csv(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
-            output_file = Path(temp_dir) / "report.txt"
+            output_file = Path(temp_dir) / "report.csv"
             result = self.module.LanguageResult(
-                filename="book|with-delimiter.epub",
+                filename="book,with-delimiter.epub",
                 from_metadata="English",
                 from_isbn="?",
                 from_detection="Swedish",
@@ -60,7 +60,7 @@ class IdentifyEpubLanguageTests(unittest.TestCase):
             self.module.write_report([result], output_file)
 
             with output_file.open(encoding="utf-8", newline="") as file_handle:
-                rows = list(csv.reader(file_handle, delimiter="|"))
+                rows = list(csv.reader(file_handle))
 
             self.assertEqual(rows[0], list(self.module.REPORT_COLUMNS))
             self.assertEqual(rows[1], list(result.as_row()))
@@ -68,7 +68,7 @@ class IdentifyEpubLanguageTests(unittest.TestCase):
     def test_main_writes_empty_report_for_empty_directory(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
-            output_file = root / "report.txt"
+            output_file = root / "report.csv"
 
             exit_code = self.module.main(
                 ["--path", str(root), "--output", str(output_file)]
@@ -77,7 +77,7 @@ class IdentifyEpubLanguageTests(unittest.TestCase):
             self.assertEqual(exit_code, 0)
             self.assertEqual(
                 output_file.read_text(encoding="utf-8"),
-                "FILENAME|FROM_METADATA|FROM_ISBN|FROM_DETECTION\n",
+                "FILENAME,FROM_METADATA,FROM_ISBN,FROM_DETECTION\n",
             )
 
     @unittest.skipUnless(

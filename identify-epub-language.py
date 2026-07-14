@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 
-DEFAULT_OUTPUT = "language-report.txt"
+DEFAULT_OUTPUT = "language-report.csv"
 EBOOK_SUFFIXES = {".epub", ".mobi"}
 REPORT_COLUMNS = ("FILENAME", "FROM_METADATA", "FROM_ISBN", "FROM_DETECTION")
 SKIPPED_EPUB_DOCUMENTS = {
@@ -33,6 +33,7 @@ class LanguageResult:
     from_detection: str = "?"
 
     def as_row(self) -> tuple[str, str, str, str]:
+        """Return the result fields in CSV column order."""
         return (
             self.filename,
             self.from_metadata,
@@ -42,6 +43,7 @@ class LanguageResult:
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    """Parse command-line arguments for the ebook language scanner."""
     parser = argparse.ArgumentParser(
         description="Identify likely languages for EPUB and MOBI files."
     )
@@ -82,6 +84,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 
 
 def find_ebook_files(root: Path, recursive: bool = True) -> list[Path]:
+    """Return EPUB and MOBI files under root, sorted case-insensitively by path."""
     root = root.expanduser()
     pattern = "**/*" if recursive else "*"
     return sorted(
@@ -95,6 +98,7 @@ def find_ebook_files(root: Path, recursive: bool = True) -> list[Path]:
 
 
 def most_frequent(values: Iterable[str]) -> str | None:
+    """Return the most common value, or None when the iterable is empty."""
     counter = Counter(values)
     if not counter:
         return None
@@ -102,6 +106,7 @@ def most_frequent(values: Iterable[str]) -> str | None:
 
 
 def language_name(language_code: str) -> str:
+    """Resolve an ISO 639 language code to its English language name."""
     try:
         from iso639 import Lang
     except ImportError as exc:
@@ -116,6 +121,7 @@ def language_name(language_code: str) -> str:
 
 
 def get_metadata_language(book_file: Path) -> str | None:
+    """Read ebook metadata and return the declared language name when present."""
     try:
         from ebookatty import MetadataFetcher
     except ImportError as exc:
@@ -133,6 +139,7 @@ def get_metadata_language(book_file: Path) -> str | None:
 
 
 def get_epub_texts(epub_file: Path) -> list[str]:
+    """Extract readable text chunks from content documents inside an EPUB file."""
     try:
         from bs4 import BeautifulSoup
         from ebooklib import epub
@@ -163,6 +170,7 @@ def get_epub_texts(epub_file: Path) -> list[str]:
 
 
 def get_isbn_language(texts: Iterable[str]) -> str | None:
+    """Find the first ISBN-13 in the text and return isbnlib's language result."""
     try:
         import isbnlib
     except ImportError as exc:
@@ -181,6 +189,7 @@ def get_isbn_language(texts: Iterable[str]) -> str | None:
 
 
 def detect_text_language(texts: Iterable[str]) -> str | None:
+    """Detect the most frequent language across sampled sentences from ebook text."""
     try:
         import langdetect
     except ImportError as exc:
@@ -209,6 +218,7 @@ def detect_text_language(texts: Iterable[str]) -> str | None:
 
 
 def analyze_file(book_file: Path) -> tuple[LanguageResult, list[str]]:
+    """Run available language detection strategies for one ebook file."""
     warnings: list[str] = []
     metadata_language = "?"
     isbn_language = "?"
@@ -249,26 +259,29 @@ def analyze_file(book_file: Path) -> tuple[LanguageResult, list[str]]:
 
 
 def write_report(results: Iterable[LanguageResult], output_file: Path) -> None:
+    """Write language identification results to a CSV report file."""
     output_file = output_file.expanduser()
     output_file.parent.mkdir(parents=True, exist_ok=True)
     with output_file.open("w", encoding="utf-8", newline="") as file_handle:
-        writer = csv.writer(file_handle, delimiter="|", lineterminator="\n")
+        writer = csv.writer(file_handle, lineterminator="\n")
         writer.writerow(REPORT_COLUMNS)
         for result in results:
             writer.writerow(result.as_row())
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    """Run the command-line scanner and return a process exit code."""
     args = parse_args(argv)
     ebook_files = find_ebook_files(args.path, recursive=args.recursive)
     results: list[LanguageResult] = []
     warnings: list[str] = []
+    stdout_writer = csv.writer(sys.stdout, lineterminator="\n")
 
     for ebook_file in ebook_files:
         result, file_warnings = analyze_file(ebook_file)
         results.append(result)
         warnings.extend(file_warnings)
-        print("|".join(result.as_row()))
+        stdout_writer.writerow(result.as_row())
 
     write_report(results, args.output)
 

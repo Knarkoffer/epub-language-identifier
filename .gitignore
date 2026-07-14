@@ -221,6 +221,5 @@ __marimo__/
 .idea/
 *.epub
 *.mobi
-output*.txt
-language-report.txt
-err.txt
+output*.csv
+language-report.csv
