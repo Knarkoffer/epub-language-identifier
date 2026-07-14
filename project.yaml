@@ -17,10 +17,19 @@ libraries:
     - isbnlib
     - iso639:Lang
     - langdetect
-    - os
     - pathlib:Path
-    - random
     - re
+    - __future__:annotations
+    - argparse
+    - collections:Counter
+    - csv
+    - dataclasses:dataclass
+    - importlib.util
+    - sys
+    - tempfile
+    - typing:Iterable
+    - typing:Sequence
+    - unittest
 github:
   owner: Knarkoffer
   repo: epub-language-identifier
