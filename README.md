@@ -16,12 +16,6 @@ source .venv/bin/activate
 pip install -e .
 ```
 
-For development tools:
-
-```bash
-pip install -e ".[dev]"
-```
-
 ## Usage
 
 Scan the current directory recursively and write `language-report.csv`:
@@ -60,13 +54,6 @@ Warnings cover metadata lookup, EPUB parsing, ISBN lookup, and text language det
 
 ```bash
 python3 -m unittest discover -s tests
-```
-
-## Formatting and linting
-
-```bash
-black .
-ruff check . --fix
 ```
 
 ## Notes
