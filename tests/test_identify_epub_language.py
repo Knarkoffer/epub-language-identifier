@@ -2,23 +2,13 @@ from __future__ import annotations
 
 import csv
 import importlib.util
-import sys
 import tempfile
 import unittest
 from pathlib import Path
 
+import identify_epub_language
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SCRIPT_PATH = REPO_ROOT / "identify-epub-language.py"
-
-
-def load_module():
-    spec = importlib.util.spec_from_file_location("identify_epub_language", SCRIPT_PATH)
-    module = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 def dependency_available(name: str) -> bool:
@@ -27,7 +17,7 @@ def dependency_available(name: str) -> bool:
 
 class IdentifyEpubLanguageTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.module = load_module()
+        self.module = identify_epub_language
 
     def test_find_ebook_files_is_case_insensitive_and_recursive(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -99,7 +89,11 @@ class IdentifyEpubLanguageTests(unittest.TestCase):
                 file_name="chapter.xhtml",
                 lang="en",
             )
-            chapter.content = "<html><body><p>This is generated EPUB content for tests.</p></body></html>"
+            chapter.content = (
+                "<html><body><p>"
+                "This is generated EPUB content for tests."
+                "</p></body></html>"
+            )
             book.add_item(chapter)
             book.add_item(epub.EpubNcx())
             book.add_item(epub.EpubNav())

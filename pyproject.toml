@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "epub-language-identifier"
+version = "0.1.0"
+description = "CLI tool that scans EPUB and MOBI ebooks and writes a CSV report of likely languages from metadata, ISBN lookup, and   text detection."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = [
+    "beautifulsoup4",
+    "ebookatty",
+    "EbookLib",
+    "isbnlib",
+    "iso639-lang",
+    "langdetect",
+    "lxml",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "ruff",
+]
+
+[project.scripts]
+epub-language-identifier = "identify_epub_language:main"
+
+[tool.setuptools]
+py-modules = ["identify_epub_language"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

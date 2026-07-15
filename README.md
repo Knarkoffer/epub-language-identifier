@@ -13,7 +13,13 @@ FILENAME,FROM_METADATA,FROM_ISBN,FROM_DETECTION
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -e .
+```
+
+For development tools:
+
+```bash
+pip install -e ".[dev]"
 ```
 
 ## Usage
@@ -21,31 +27,31 @@ pip install -r requirements.txt
 Scan the current directory recursively and write `language-report.csv`:
 
 ```bash
-python3 identify-epub-language.py
+epub-language-identifier
 ```
 
 Scan a specific directory:
 
 ```bash
-python3 identify-epub-language.py --path /path/to/books
+epub-language-identifier --path /path/to/books
 ```
 
 Choose a report path:
 
 ```bash
-python3 identify-epub-language.py --path /path/to/books --output /tmp/language-report.csv
+epub-language-identifier --path /path/to/books --output /tmp/language-report.csv
 ```
 
 Scan only the selected directory:
 
 ```bash
-python3 identify-epub-language.py --path /path/to/books --no-recursive
+epub-language-identifier --path /path/to/books --no-recursive
 ```
 
 Show per-file warnings:
 
 ```bash
-python3 identify-epub-language.py --path /path/to/books --verbose
+epub-language-identifier --path /path/to/books --verbose
 ```
 
 Warnings cover metadata lookup, EPUB parsing, ISBN lookup, and text language detection failures. Without `--verbose`, files with failed detection steps are still included in the report with `?` for unknown values.
@@ -54,6 +60,13 @@ Warnings cover metadata lookup, EPUB parsing, ISBN lookup, and text language det
 
 ```bash
 python3 -m unittest discover -s tests
+```
+
+## Formatting and linting
+
+```bash
+black .
+ruff check . --fix
 ```
 
 ## Notes

@@ -6,10 +6,9 @@ import csv
 import re
 import sys
 from collections import Counter
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Sequence
-
 
 DEFAULT_OUTPUT = "language-report.csv"
 EBOOK_SUFFIXES = {".epub", ".mobi"}
